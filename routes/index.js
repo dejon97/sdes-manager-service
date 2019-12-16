@@ -11,7 +11,9 @@ router.get('/engagementattributes', (req, res) => {
   res.send('Welcome to SDE Manager. One Service to manage them All!!');
 });
 
-router.post('/accounts/:accountId/consumer/:consumerId/engagementattributes', (req, res) => {
+
+router.post('/accounts/:accountId/consumers/:consumerId/engagementattributes', (req, res) => {
+
   const { accountId, consumerId } = req.params;
   const { appId, engagementAttributes } = req.body;
 
@@ -19,7 +21,7 @@ router.post('/accounts/:accountId/consumer/:consumerId/engagementattributes', (r
 
   const monitoringServiceURL = `${monitoringServiceDomain}/api/account/${accountId}/app/${appId}/report?v=1.1`;
 
-  //console.log(monitoringServiceURL);
+  console.log(monitoringServiceURL);
 
   const identities = [
     {
@@ -45,18 +47,27 @@ router.post('/accounts/:accountId/consumer/:consumerId/engagementattributes', (r
     json: true
   };
 
-  console.log(monitoringServiceURL);
-
   request(options, async (error, response, body) =>  {
     if (error) throw new Error(error);
 
     console.log(body);
 
-    const { message } = body;
+    let vid = '';
+    let sid = '';
 
-    const vid = message.slice(-22);
+    if ('message' in body) {
+      const { message } = body;
+      vid = message.slice(-22);
+    } else {
+      vid = body.visitorId;
+      sid = body.sessionId;
+    }
 
-    const setServiceURL = `${monitoringServiceURL}&vid=${vid}`;
+    let setServiceURL = `${monitoringServiceURL}&vid=${vid}`;
+
+    if (sid.length > 0) {
+      setServiceURL += `&sid=${sid}`;
+    }
 
     console.log(setServiceURL);
 
