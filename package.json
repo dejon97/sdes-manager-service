@@ -5,7 +5,9 @@
   "index": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node index.js",
+    "push": "heroku container:push web --app sdes-manager-service",
+    "release" : "heroku container:release web --app sdes-manager-service"
   },
   "author": "John McCullough",
   "license": "ISC",
